@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.study.lyan.smartbuilder">
+
+    <!-- 读取log -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- 允许联网 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 获取GSM（2g）、WCDMA（联通3g）等网络状态的信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 获取wifi网络状态的信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 获取sd卡写的权限，用于文件上传和下载 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 允许读取手机状态 用于创建BmobInstallation -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:name=".application.BaseApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- 主界面 -->
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <!-- 设置界面 -->
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/setting"
+            android:screenOrientation="portrait" />
+        <!-- 闪屏页/欢迎界面 -->
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityFullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 引导界面 -->
+        <activity
+            android:name=".activity.GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ActivityFullscreen" />
+        <!-- 登陆界面 -->
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="登陆"
+            android:screenOrientation="portrait" />
+        <!-- 注册界面 -->
+        <activity
+            android:name=".activity.RegisteredActivity"
+            android:label="注册"
+            android:screenOrientation="portrait" />
+        <!-- 忘记密码界面 -->
+        <activity
+            android:name=".activity.ForgetPassWordActivity"
+            android:label="密码重置"
+            android:screenOrientation="portrait" />
+        <!-- 用于适配6.0以上的临时文件读取 -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.study.lyan.smartbuilder.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <!-- 快递查询 -->
+        <activity
+            android:name=".activity.CourierActivity"
+            android:label="快递查询"
+            android:screenOrientation="portrait" />
+        <!-- 归属地查询 -->
+        <activity
+            android:name=".activity.PhoneActivity"
+            android:label="归属地查询"
+            android:screenOrientation="portrait" />
+        <!-- 新闻详情 -->
+        <activity android:name=".activity.WebViewActivity"
+            android:label="新闻详情"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

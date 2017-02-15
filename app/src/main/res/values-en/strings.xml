@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SmartBuilder</string>
+    <string name="butler">butler</string>
+    <string name="wechat">wechat</string>
+    <string name="girl">girl</string>
+    <string name="user">user</string>
+    <string name="setting">Setting</string>
+</resources>
