@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.study.lyan.smartbuilder.R;
 
 /**
  * Created by Lyan on 17/2/12.
@@ -14,7 +15,9 @@ import com.squareup.picasso.Transformation;
 
 public class PicassoUtils {
 
-    public static boolean debug = true;
+    public static boolean debug = true;//调试模式
+    public static final int LOAD_RES = R.drawable.load_default;//加载图片
+    public static final int ERROR_RES = R.drawable.load_default;//错误图片
     /**
      * 加载网络图片
      *
@@ -23,7 +26,9 @@ public class PicassoUtils {
      * @param imageView
      */
     public static void loadImageView(Context context, String url, ImageView imageView) {
-        Picasso.with(context).load(url).into(imageView);
+        Picasso.with(context)
+                .load(url)
+                .into(imageView);
     }
 
     /**
@@ -36,9 +41,14 @@ public class PicassoUtils {
      * @param imageView
      */
     public static void loadImageViewSize(Context context, String url, int width, int height, ImageView imageView) {
-        Picasso.with(context).setIndicatorsEnabled(debug);
-        Picasso.with(context).load(url).config(Bitmap.Config.RGB_565).resize(width, height).centerCrop().into(imageView);
-
+        Picasso.with(context)
+                .setIndicatorsEnabled(debug);
+        Picasso.with(context)
+                .load(url)
+                .config(Bitmap.Config.RGB_565)
+                .resize(width, height)
+                .centerCrop()
+                .into(imageView);
     }
     /**
      * 设置加载图片错误图片
@@ -50,7 +60,11 @@ public class PicassoUtils {
      * @param imageView
      */
     public static void loadImageViewHolder(Context context, String url, @DrawableRes int load, @DrawableRes int error, ImageView imageView) {
-        Picasso.with(context).load(url).placeholder(load).error(error).into(imageView);
+        Picasso.with(context)
+                .load(url)
+                .placeholder(load)
+                .error(error)
+                .into(imageView);
     }
 
     /**
@@ -61,7 +75,12 @@ public class PicassoUtils {
      */
     public static void loadImageViewCrop(Context context,String url,ImageView imageView){
         Picasso.with(context).setIndicatorsEnabled(debug);
-        Picasso.with(context).load(url).transform(new CropSquareTransformation()).into(imageView);
+        Picasso.with(context)
+                .load(url)
+                .placeholder(LOAD_RES)
+                .error(ERROR_RES)
+                .transform(new CropSquareTransformation())
+                .into(imageView);
     }
     public static class CropSquareTransformation implements Transformation {
         @Override

@@ -86,8 +86,13 @@
             android:label="归属地查询"
             android:screenOrientation="portrait" />
         <!-- 新闻详情 -->
-        <activity android:name=".activity.WebViewActivity"
+        <activity
+            android:name=".activity.WebViewActivity"
             android:label="新闻详情"
+            android:screenOrientation="portrait" />
+        <!-- 展示大图 -->
+        <activity android:name=".activity.GirlLargePictureActivity"
+            android:theme="@style/FullscreenTransparent"
             android:screenOrientation="portrait" />
     </application>
 

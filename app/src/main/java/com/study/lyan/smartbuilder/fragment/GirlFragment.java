@@ -1,13 +1,16 @@
 package com.study.lyan.smartbuilder.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -15,6 +18,7 @@ import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
 import com.orhanobut.logger.Logger;
 import com.study.lyan.smartbuilder.R;
+import com.study.lyan.smartbuilder.activity.GirlLargePictureActivity;
 import com.study.lyan.smartbuilder.adapter.GrilAdapter;
 import com.study.lyan.smartbuilder.entity.GirlImage;
 import com.study.lyan.smartbuilder.utils.ToastUtils;
@@ -31,6 +35,7 @@ import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -63,8 +68,16 @@ public class GirlFragment extends BaseFragment implements XRecyclerView.LoadingL
         list = new ArrayList<>();//数据
         adapter = new GrilAdapter(list,getContext());//适配器
         adapter.setOnItemClickListener(this);//设置Item点击事件
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        final StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+        manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         manager.setItemPrefetchEnabled(false);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                manager.invalidateSpanAssignments(); //防止第一行到顶部有空白区域
+            }
+        });
         mRecyclerView.setLayoutManager(manager);//设置显示效果
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);//刷新样式
         mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);//加载更多样式
@@ -161,8 +174,27 @@ public class GirlFragment extends BaseFragment implements XRecyclerView.LoadingL
             ToastUtils.shortToast(getContext(),"获取数据失败！");
         }
     };
+
+    /**
+     * 列表的点击事件
+     * @param itemView
+     * @param position
+     */
     @Override
     public void onItemClick(View itemView, int position) {
-        ToastUtils.shortToast(getContext(),position + "");
+        ImageView imageView = ButterKnife.findById(itemView,R.id.girl);
+        Logger.t("选中的照片").i(String.valueOf(position));//打印Log
+        Intent intent = startTo(GirlLargePictureActivity.class);//跳转到大图界面
+        GirlImage girlImage = list.get(position);//获取对象
+        intent.putExtra("imageUrl",girlImage.getUrl());//传入图片网址
+        int location[] = new int[2];//保存图片的坐标位置
+        imageView.getLocationOnScreen(location);//获取坐标位置
+        Logger.t("选中的item").i("左侧起点%s , 顶部起点%s" , location[0],location[1]);
+        intent.putExtra("left", location[0]);//存入ImageView左侧顶点
+        intent.putExtra("top", location[1]);//存入ImageView顶部顶点
+        intent.putExtra("height", girlImage.getHeight());//存入ImageView顶部顶点
+        intent.putExtra("width", girlImage.getWidth());//存入ImageView右侧顶点
+        startActivity(intent);//跳转界面
+        activity.overridePendingTransition(0,0);//设置主界面的过渡动画
     }
 }

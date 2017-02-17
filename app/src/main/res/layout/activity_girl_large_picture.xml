@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_girl_large_picture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.study.lyan.smartbuilder.activity.GirlLargePictureActivity">
+
+    <com.wingsofts.dragphotoview.DragPhotoView
+        android:id="@+id/show_picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

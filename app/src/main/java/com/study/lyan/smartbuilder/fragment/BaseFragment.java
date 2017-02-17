@@ -1,6 +1,7 @@
 package com.study.lyan.smartbuilder.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,13 @@ import butterknife.Unbinder;
 
 public abstract class BaseFragment extends Fragment{
     private Unbinder unbinder;
+    protected Activity activity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.activity = (Activity) context;
+    }
 
     @Nullable
     @Override

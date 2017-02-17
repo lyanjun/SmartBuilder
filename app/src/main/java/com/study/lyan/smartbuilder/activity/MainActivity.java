@@ -7,15 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.orhanobut.logger.Logger;
 import com.study.lyan.smartbuilder.R;
 import com.study.lyan.smartbuilder.adapter.MyFragmentAdapter;
-import com.study.lyan.smartbuilder.helper.InitHelper;
 import com.study.lyan.smartbuilder.fragment.ButlerFragment;
 import com.study.lyan.smartbuilder.fragment.GirlFragment;
 import com.study.lyan.smartbuilder.fragment.UserFragment;
 import com.study.lyan.smartbuilder.fragment.WechatFragment;
-import com.tencent.bugly.crashreport.CrashReport;
+import com.study.lyan.smartbuilder.helper.InitHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +70,6 @@ public class MainActivity extends BaseActivity{
         mFragment.add(new WechatFragment());
         mFragment.add(new GirlFragment());
         mFragment.add(new UserFragment());
-
     }
 
     /**
