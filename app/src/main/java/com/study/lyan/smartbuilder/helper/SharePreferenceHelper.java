@@ -66,7 +66,6 @@ public class SharePreferenceHelper {
             return ERROR_RESULT;
         }
     }
-
     /**
      * 插入数据或者修改数据
      *
