@@ -1,5 +1,6 @@
 package com.study.lyan.smartbuilder.activity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -63,13 +64,25 @@ public class LoginActivity extends BaseActivity {
         //实例化自定义弹窗
         dialog = new LoginDialog(this);
         dialog.setHintText("正在登陆");
+        //权限申请
+        requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS},1000);
     }
 
     @Override
     protected boolean showBackHomeButton() {
         return false;
     }
-
+    /**
+     * 获取权限失败
+     * @param requestCode
+     */
+    @Override
+    public void permissionFail(int requestCode) {
+        super.permissionFail(requestCode);
+        if (requestCode == 1000){
+            ToastUtils.shortToast(this,"权限获取失败！");
+        }
+    }
 
     /**
      * 自发生改变

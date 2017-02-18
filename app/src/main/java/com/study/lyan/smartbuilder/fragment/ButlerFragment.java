@@ -10,17 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechSynthesizer;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
 import com.kymjs.rxvolley.client.HttpParams;
 import com.orhanobut.logger.Logger;
 import com.study.lyan.smartbuilder.R;
-import com.study.lyan.smartbuilder.activity.CourierActivity;
 import com.study.lyan.smartbuilder.adapter.ChatListAdapter;
-import com.study.lyan.smartbuilder.adapter.CourierAdapter;
 import com.study.lyan.smartbuilder.entity.ChatData;
-import com.study.lyan.smartbuilder.entity.Courier;
+import com.study.lyan.smartbuilder.helper.SharePreferenceHelper;
+import com.study.lyan.smartbuilder.listener.TTSSynthesizerListener;
 import com.study.lyan.smartbuilder.utils.GetViewTextUtils;
 import com.study.lyan.smartbuilder.utils.StaticClass;
 import com.study.lyan.smartbuilder.utils.ToastUtils;
@@ -30,11 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -52,7 +50,10 @@ public class ButlerFragment extends BaseFragment {
     Button btnSend;
 
     private List<ChatData> mList = new ArrayList<>();
-    private ChatListAdapter adapter;
+    private ChatListAdapter adapter;//聊天适配器
+    private SpeechSynthesizer mTts;//合成语音
+    private TTSSynthesizerListener listener;//语音播放监听
+    private SharePreferenceHelper share;
     @Override
     protected View toCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_butler, null);
@@ -61,29 +62,47 @@ public class ButlerFragment extends BaseFragment {
 
     @Override
     protected void setView() {
+        share = SharePreferenceHelper.getInstance();
         //设置适配器
-        adapter = new ChatListAdapter(getContext(),mList);
+        adapter = new ChatListAdapter(getContext(), mList);
         mChatListView.setAdapter(adapter);
+        //1.创建SpeechSynthesizer对象, 第二个参数：本地合成时传InitListener
+        mTts = SpeechSynthesizer.createSynthesizer(activity, null);
+        //2.合成参数设置，详见《科大讯飞MSC API手册(Android)》SpeechSynthesizer 类
+        mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoyan");//设置发音人
+        mTts.setParameter(SpeechConstant.SPEED, "50");//设置语速
+        mTts.setParameter(SpeechConstant.VOLUME, "80");//设置音量，范围0~100
+        mTts.setParameter(SpeechConstant.ENGINE_TYPE, SpeechConstant.TYPE_CLOUD); //设置云端
+        //3.开始合成
+        listener = new TTSSynthesizerListener();//语音合成的回调监听
         //默认提示
-        sendText(ChatListAdapter.VALUE_LEFT_TEXT,"你好，我是上帝！");
+        robotSpeak("你好，我是上帝！");
+    }
+
+    /**
+     * 合成语音
+     * @param text
+     */
+    private void startSpeak(String text){
+        mTts.startSpeaking(text, listener);
     }
 
     /**
      * 发送内容
      */
     @OnClick(value = R.id.btn_send)
-    public void onClick(){
+    public void onClick() {
         String inputStr = GetViewTextUtils.getTextFromView(etText);
-        if (!TextUtils.isEmpty(inputStr) && inputStr.length() < 30){
+        if (!TextUtils.isEmpty(inputStr) && inputStr.length() < 30) {
             etText.setText(StaticClass.NONE_TEXT);//清空输入窗
-            sendText(ChatListAdapter.VALUE_RIGHT_TEXT,inputStr);//添加内容到列表
+            sendText(ChatListAdapter.VALUE_RIGHT_TEXT, inputStr);//添加内容到列表
             //与后台交互
             HttpParams params = new HttpParams();
-            params.put("key",UrlInterface.CHAT_LIST_KEY);
-            params.put("info",inputStr);
-            RxVolley.post(UrlInterface.CHAT_LIST_URL,params,callback);
-        }else {
-            ToastUtils.shortToast(getContext(),"请填写内容！");
+            params.put("key", UrlInterface.CHAT_LIST_KEY);
+            params.put("info", inputStr);
+            RxVolley.post(UrlInterface.CHAT_LIST_URL, params, callback);
+        } else {
+            ToastUtils.shortToast(getContext(), "请填写内容！");
         }
 
     }
@@ -100,7 +119,6 @@ public class ButlerFragment extends BaseFragment {
 //    }
     /**
      * 获取数据结果
-     *
      */
     private HttpCallback callback = new HttpCallback() {
         /**
@@ -116,18 +134,19 @@ public class ButlerFragment extends BaseFragment {
                 JSONObject jsonObject = new JSONObject(t);
                 String reason = jsonObject.getString("reason");
                 //拿到返回值
-                if ("成功的返回".equals(reason)){
+                if ("成功的返回".equals(reason)) {
                     JSONObject json = jsonObject.getJSONObject("result");
                     text = json.getString("text");
-                }else {
+                } else {
                     text = "本上帝不懂！";
                 }
-                //拿到机器人的返回值之后添加在left item
-                sendText(ChatListAdapter.VALUE_LEFT_TEXT,text);
+                //机器人语音播放
+                robotSpeak(text);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
         /**
          * 请求失败
          * @param errorNo
@@ -136,15 +155,17 @@ public class ButlerFragment extends BaseFragment {
         @Override
         public void onFailure(int errorNo, String strMsg) {
             super.onFailure(errorNo, strMsg);
-            ToastUtils.shortToast(getContext(),"获取数据失败！" + strMsg);
+            ToastUtils.shortToast(getContext(), "获取数据失败！" + strMsg);
         }
     };
+
     /**
      * 将内容显示到界面中
+     *
      * @param type
      * @param text
      */
-    private void sendText(int type,String text){
+    private void sendText(int type, String text) {
         ChatData data = new ChatData();
         data.setType(type);
         data.setText(text);
@@ -154,5 +175,18 @@ public class ButlerFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
         //滚动到列表的最底部
         mChatListView.setSelection(mChatListView.getBottom());
+    }
+
+    /**
+     * 机器人语音播报
+     * @param text
+     */
+    private void robotSpeak(String text){
+        //拿到机器人的返回值之后添加在left item
+        sendText(ChatListAdapter.VALUE_LEFT_TEXT, text);
+        if ((Boolean) share.get("isSpeak",false)){
+            //机器人语音说话
+            startSpeak(text);
+        }
     }
 }

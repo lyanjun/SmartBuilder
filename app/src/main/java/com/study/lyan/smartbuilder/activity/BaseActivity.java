@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import butterknife.ButterKnife;
@@ -13,7 +12,7 @@ import butterknife.ButterKnife;
  * Created by Lyan on 17/2/9.
  */
 
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends MPermissionsActivity{
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
