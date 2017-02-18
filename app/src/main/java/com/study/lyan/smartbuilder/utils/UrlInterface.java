@@ -25,4 +25,6 @@ public interface UrlInterface {
     int EVERY_COUNT = 20;//每页数据的个数
     //福利
     String GANK_GIRL = "http://gank.io/api/data/%s/%s/%s";
+    //语音Key
+    String VOICE_KEY = "58a7a017";
 }

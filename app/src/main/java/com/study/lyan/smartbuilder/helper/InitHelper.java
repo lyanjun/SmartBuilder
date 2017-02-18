@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
 import com.study.lyan.smartbuilder.R;
 import com.study.lyan.smartbuilder.utils.StaticClass;
+import com.study.lyan.smartbuilder.utils.UrlInterface;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
@@ -41,7 +44,8 @@ public class InitHelper {
         CrashReport.initCrashReport(mContext, StaticClass.BUGLY_APP_ID,
                 StaticClass.BUGLY_IS_DEBUG);//配置bugly
         Bmob.initialize(mContext, StaticClass.BMOB_APP_ID);//初始化Bmob
-
+        SpeechUtility.createUtility(context,//初始化科大讯飞
+                SpeechConstant.APPID +"=" + UrlInterface.VOICE_KEY);
     }
     /**
      * 获取单例
