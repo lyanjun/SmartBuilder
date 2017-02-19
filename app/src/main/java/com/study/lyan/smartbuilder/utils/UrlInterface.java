@@ -27,4 +27,9 @@ public interface UrlInterface {
     String GANK_GIRL = "http://gank.io/api/data/%s/%s/%s";
     //语音Key
     String VOICE_KEY = "58a7a017";
+    //短信Action
+    String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
+    String SYSTEM_DIALOGS_RESON_KEY = "reason";
+    String SYSTEM_DIALOGS_HOME_KEY = "homekey";
+    String SYSTEM_DIALOGS_RECENT_APPS = "recentapps";
 }
