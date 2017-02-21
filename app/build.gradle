@@ -51,4 +51,5 @@ dependencies {
     compile 'com.github.githubwing:DragPhotoView:1.0.1'
     compile files('libs/Msc.jar')
     compile files('libs/Sunflower.jar')
+    compile project(':libzxing')
 }

@@ -1,7 +1,9 @@
 package com.study.lyan.smartbuilder.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -10,9 +12,12 @@ import android.widget.TextView;
 import com.study.lyan.smartbuilder.R;
 import com.study.lyan.smartbuilder.helper.SharePreferenceHelper;
 import com.study.lyan.smartbuilder.service.SmsService;
+import com.study.lyan.smartbuilder.utils.ToastUtils;
+import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 /**
  * Created by Lyan on 17/2/9.
@@ -102,6 +107,10 @@ public class SettingActivity extends BaseActivity {
 //                    stopService(service(SmsService.class));
 //                }
                 break;
+            case 3000:
+                //扫描二维码
+                startActivityForResult(startTo(CaptureActivity.class),4000);
+                break;
         }
     }
 
@@ -155,6 +164,9 @@ public class SettingActivity extends BaseActivity {
                 isSms = false;//取消选中状态
                 swSms.setChecked(isSms);//重置按钮状态
                 break;
+            case 3000://扫描二维码
+                ToastUtils.shortToast(this,"获取摄像头权限失败！");
+                break;
         }
     }
 
@@ -175,6 +187,41 @@ public class SettingActivity extends BaseActivity {
                 isSms = isChecked;//获取按钮当前状态
                 requestPermission(new String[]{Manifest.permission.RECEIVE_SMS}, 2000);
                 break;
+
+        }
+    }
+
+    /**
+     * 点击事件
+     * @param view
+     */
+    @OnClick(value = {R.id.ll_scan,R.id.ll_qr_code})
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.ll_scan://二维码扫描
+                requestPermission(new String[]{Manifest.permission.CAMERA},3000);
+                break;
+            case R.id.ll_qr_code://生成二维码
+                startActivity(startTo(QrCodeActivity.class));
+                break;
+        }
+    }
+    /**
+     * 返回界面结果
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            switch(requestCode){
+                case 4000://获取二维码信息
+                    String scanResult = data.getExtras().getString("result");
+                    tvScanResult.setText(scanResult);//显示二维码信息
+                    break;
+            }
         }
     }
 }

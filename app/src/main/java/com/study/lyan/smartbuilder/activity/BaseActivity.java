@@ -91,7 +91,7 @@ public abstract class BaseActivity extends MPermissionsActivity{
     /**
      * WRITE_SETTINGS权限检查
      */
-    protected void checkedWriteSettings(){
+    protected final void checkedWriteSettings(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(!Settings.System.canWrite(this)){
                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
@@ -108,7 +108,7 @@ public abstract class BaseActivity extends MPermissionsActivity{
     /**
      * SYSTEM_ALERT_WINDOW权限检查
      */
-    protected void checkedSystemAlertWindow(){
+    protected final void checkedSystemAlertWindow(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
