@@ -52,4 +52,5 @@ dependencies {
     compile files('libs/Msc.jar')
     compile files('libs/Sunflower.jar')
     compile project(':libzxing')
+    compile files('libs/BaiduLBS_Android.jar')
 }

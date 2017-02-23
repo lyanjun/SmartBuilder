@@ -99,17 +99,14 @@ public class SettingActivity extends BaseActivity {
                 break;
             case 2000://开启短信监听
                 checkedSystemAlertWindow();//检查弹窗权限
-//                share.put("isSms",isSms).commit();//存入开关状态
-//                //开启或关闭一个监听短信的服务
-//                if (isSms){//开启监听短信的服务
-//                    startService(service(SmsService.class));
-//                }else {//关闭监听短信的服务
-//                    stopService(service(SmsService.class));
-//                }
                 break;
-            case 3000:
-                //扫描二维码
+            case 3000://扫描二维码
+                //跳转界面
                 startActivityForResult(startTo(CaptureActivity.class),4000);
+                break;
+            case 5000://获取定位位置
+//                checkedWriteSettings();//检查修改系统设置权限
+                startActivity(startTo(LocationActivity.class));
                 break;
         }
     }
@@ -130,6 +127,8 @@ public class SettingActivity extends BaseActivity {
             } else {//关闭监听短信的服务
                 stopService(service(SmsService.class));
             }
+        }else if(code == WRITE_SETTINGS){
+            startActivity(startTo(LocationActivity.class));
         }
     }
 
@@ -144,6 +143,8 @@ public class SettingActivity extends BaseActivity {
         if (code == SYSTEM_ALERT_WINDOW) {
             isSms = false;//取消选中状态
             swSms.setChecked(isSms);//重置按钮状态
+        }else if(code == WRITE_SETTINGS){
+            ToastUtils.shortToast(this,"获取修改系统设置权限失败！");
         }
     }
 
@@ -166,6 +167,9 @@ public class SettingActivity extends BaseActivity {
                 break;
             case 3000://扫描二维码
                 ToastUtils.shortToast(this,"获取摄像头权限失败！");
+                break;
+            case 5000://定位我的位置
+                ToastUtils.shortToast(this,"获取定位权限失败！");
                 break;
         }
     }
@@ -195,7 +199,7 @@ public class SettingActivity extends BaseActivity {
      * 点击事件
      * @param view
      */
-    @OnClick(value = {R.id.ll_scan,R.id.ll_qr_code})
+    @OnClick(value = {R.id.ll_scan,R.id.ll_qr_code,R.id.ll_my_location})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.ll_scan://二维码扫描
@@ -203,6 +207,10 @@ public class SettingActivity extends BaseActivity {
                 break;
             case R.id.ll_qr_code://生成二维码
                 startActivity(startTo(QrCodeActivity.class));
+                break;
+            case R.id.ll_my_location://显示定位位置
+                requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION},5000);
                 break;
         }
     }

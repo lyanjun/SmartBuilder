@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 
+import com.baidu.mapapi.SDKInitializer;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.orhanobut.logger.LogLevel;
@@ -46,6 +47,7 @@ public class InitHelper {
         Bmob.initialize(mContext, StaticClass.BMOB_APP_ID);//初始化Bmob
         SpeechUtility.createUtility(context,//初始化科大讯飞
                 SpeechConstant.APPID +"=" + UrlInterface.VOICE_KEY);
+        SDKInitializer.initialize(mContext);//初始化百度地图
     }
     /**
      * 获取单例
